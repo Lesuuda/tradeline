@@ -6,7 +6,7 @@ class AuthController {
 
   async signup(req, res) {
     try {
-        const { name, email, password, role } = req.body;
+        const { username, email, password, role } = req.body;
 
         // Check if user already exists (regardless of role)
         const findUser = await User.findOne({ email });
@@ -19,7 +19,7 @@ class AuthController {
 
         // Create the user (with the default role if not provided)
         const user = await User.create({ 
-            name, 
+            username, 
             email, 
             password: hashedPassword, 
             role: role || 'customer' 

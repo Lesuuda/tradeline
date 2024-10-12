@@ -10,7 +10,7 @@ const AuthPage = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
-  const mode = searchParams.get('mode') || 'login';
+  const mode = searchParams.get('mode') || 'login'; // Get the mode (login/signup) from query params
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -18,13 +18,18 @@ const AuthPage = () => {
     setLoading(true);
     setError('');
 
-    const endpoint = mode === 'signup' ? '/api/auth/signup' : '/api/auth/login';
+    const endpoint = mode === 'signup' ? 'http://localhost:5000/auth/signup' : 'http://localhost:5000/auth/login';
 
     try {
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, username: mode === 'signup' ? username : undefined }),
+        body: JSON.stringify({
+          email,
+          password,
+          username: mode === 'signup' ? username : undefined, // Send username only in signup mode
+        }),
+        credentials: 'include',  // Include credentials (cookies, etc.)
       });
 
       const data = await response.json();
@@ -32,8 +37,14 @@ const AuthPage = () => {
         throw new Error(data.message || 'Something went wrong');
       }
 
-      // Assuming successful login/signup, redirect to home
-      router.push('/home');
+      // Redirect based on mode
+      if (mode === 'signup') {
+        // Redirect to login after successful signup
+        router.push('/auth?mode=login');
+      } else if (mode === 'login') {
+        // Redirect to home after successful login
+        router.push('/home');
+      }
     } catch (err: any) {
       setError(err.message);
     } finally {

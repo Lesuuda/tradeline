@@ -40,7 +40,12 @@ class AuthController {
                 name: user.name,
                 email: user.email,
                 role: user.role
-            }
+            },
+            headers: {
+              'Access-Control-Allow-Headers' : 'Content-Type, Authorization',
+              'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
+              'Access-Control-Allow-Origin': '*'
+            },
         });
     } catch (error) {
         console.error(error); // Log error for debugging

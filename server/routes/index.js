@@ -6,7 +6,7 @@ import ProductsController from '../controllers/productsController.js';
 import AdminController from '../controllers/adminController.js';
 import adminMiddleware from '../middleware/adminMiddleware.js';
 import CategoryController from '../controllers/categoryController.js';
-
+import CartController from '../controllers/cartController.js';
 
 const router = express.Router();
 
@@ -54,5 +54,10 @@ router.get('/categories', ProductsController.getCategories);
 router.get('/category/:categoryId', ProductsController.getProductsByCategory);
 router.get('/search', ProductsController.searchProducts);
 
+//cart routes
+router.get('/cart', authMiddleware, CartController.getCart);
+router.post('/cart/add-to-cart', authMiddleware, CartController.addToCart);
+router.delete('/cart/remove-from-cart', authMiddleware, CartController.removeFromCart);
+router.put('/cart/update-cart', authMiddleware, CartController.updateCart);
 
 export default router; // Path: server/routes/index.j

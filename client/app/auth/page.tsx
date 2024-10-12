@@ -43,7 +43,7 @@ const AuthPage = () => {
         router.push('/auth?mode=login');
       } else if (mode === 'login') {
         // Redirect to home after successful login
-        router.push('/home');
+        router.push('/products');
       }
     } catch (err: any) {
       setError(err.message);

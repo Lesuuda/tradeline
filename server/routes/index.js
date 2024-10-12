@@ -51,7 +51,7 @@ router.delete('/categories/:id', CategoryController.deleteCategory);
 router.get('/products', ProductsController.getProducts);
 router.get('/products/:id', ProductsController.getProductById);
 router.get('/categories', ProductsController.getCategories);
-router.get('/categories/:categoryName', ProductsController.getProductsByCategory);
+router.get('/category/:categoryId', ProductsController.getProductsByCategory);
 router.get('/search', ProductsController.searchProducts);
 
 

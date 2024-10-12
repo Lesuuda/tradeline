@@ -48,19 +48,25 @@ class ProductsController {
     // Get products by category
     async getProductsByCategory(req, res) {
         try {
-            const category = await Category.findOne({ name: req.params.categoryName });
+            // Use req.params.categoryId instead of category name
+            const category = await Category.findById(req.params.categoryId);
             if (!category) {
                 return res.status(404).json({ message: 'Category not found' });
             }
+            
+            // Fetch products for this category
             const products = await Product.find({ category: category._id }).populate('category', 'name description');
             if (products.length === 0) {
                 return res.status(404).json({ message: 'No products found for this category' });
             }
+    
             res.status(200).json(products);
         } catch (error) {
             res.status(500).json({ message: 'Server error', error: error.message });
         }
     }
+    
+    
 
     // Search products by name or description
     async searchProducts(req, res) {

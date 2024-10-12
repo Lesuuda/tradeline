@@ -20,7 +20,7 @@ interface Product {
 const ProductsPage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -43,12 +43,12 @@ const ProductsPage = () => {
     fetchCategories();
   }, []);
 
-  // Fetch products by selected category
-  const fetchProductsByCategory = async (categoryName: string) => {
+  // Fetch products by selected category ID
+  const fetchProductsByCategory = async (categoryId: string) => {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch(`http://localhost:5000/products`);
+      const res = await fetch(`http://localhost:5000/category/${categoryId}`);
       const data = await res.json();
       if (res.ok) {
         setProducts(data);
@@ -63,13 +63,13 @@ const ProductsPage = () => {
   };
 
   // Handle category selection
-  const handleCategoryClick = (categoryName: string) => {
-    setSelectedCategory(categoryName);
-    fetchProductsByCategory(categoryName);
+  const handleCategoryClick = (categoryId: string) => {
+    setSelectedCategoryId(categoryId);
+    fetchProductsByCategory(categoryId);
   };
 
   return (
-    <div className="min-h-screen p-6 bg-gray-100">
+    <div className="min-h-screen p-6 bg-gray-900 text-white">
       <h1 className="text-3xl font-bold mb-6 text-center">Products</h1>
 
       {error && <p className="text-red-500 text-center mb-4">{error}</p>}
@@ -82,8 +82,8 @@ const ProductsPage = () => {
             {categories.map((category) => (
               <li key={category._id}>
                 <button
-                  className={`py-2 px-4 w-full text-left ${selectedCategory === category.name ? 'bg-blue-500 text-white' : 'bg-white'}`}
-                  onClick={() => handleCategoryClick(category.name)}
+                  className={`py-2 px-4 w-full text-left ${selectedCategoryId === category._id ? 'bg-blue-500 text-white' : 'bg-gray-800'}`}
+                  onClick={() => handleCategoryClick(category._id)}
                 >
                   {category.name}
                 </button>
@@ -100,11 +100,11 @@ const ProductsPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {products.length > 0 ? (
                 products.map((product) => (
-                  <div key={product._id} className="bg-white p-4 rounded-lg shadow-md">
+                  <div key={product._id} className="bg-gray-800 p-4 rounded-lg shadow-md">
                     <h3 className="text-lg font-semibold">{product.name}</h3>
-                    <p className="text-sm text-gray-600">{product.description}</p>
-                    <p className="text-sm text-gray-600">Price: ${product.price}</p>
-                    <p className="text-sm text-gray-600">Stock: {product.stock}</p>
+                    <p className="text-sm text-gray-400">{product.description}</p>
+                    <p className="text-sm text-gray-400">Price: ${product.price}</p>
+                    <p className="text-sm text-gray-400">Stock: {product.stock}</p>
                   </div>
                 ))
               ) : (

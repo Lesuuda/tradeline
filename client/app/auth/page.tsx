@@ -42,6 +42,7 @@ const AuthPage = () => {
         // Redirect to login after successful signup
         router.push('/auth?mode=login');
       } else if (mode === 'login') {
+        localStorage.setItem('token', data.token);  // Save token in local storage
         // Redirect to home after successful login
         router.push('/products');
       }

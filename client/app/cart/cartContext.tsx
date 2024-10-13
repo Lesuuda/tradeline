@@ -22,15 +22,41 @@ export const useCart = () => {
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
 
-  const addToCart = async (productId: string, quantity: number) => {
-    await fetch('/api/cart', {
+ const addToCart = async (productId: string, quantity: number) => {
+  const token = localStorage.getItem('token');
+  
+  if (!token) {
+    console.error("No token found. User is not authenticated.");
+    return; // Exit if there's no token
+  }
+
+  try {
+    const response = await fetch('http://localhost:5000/cart/add-to-cart', {
       method: 'POST',
       body: JSON.stringify({ productId, quantity }),
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,  // Ensure the token is passed
+      },
     });
 
-    setCart([...cart, { product: productId, quantity }]);
-  };
+    if (response.status === 401) {
+      console.error("Unauthorized: Token might be invalid or expired.");
+      return;
+    }
+
+    if (response.ok) {
+      const updatedCart = await response.json(); // Assuming you get the updated cart in response
+      setCart([...cart, { product: productId, quantity }]);
+      alert('Product Added to cart!');
+    } else {
+      console.error('Error adding to cart:', await response.text());
+    }
+  } catch (error) {
+    console.error('Error during addToCart:', error);
+  }
+};
+
 
   const removeFromCart = async (productId: string) => {
     await fetch('/api/cart', {

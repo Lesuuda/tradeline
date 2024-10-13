@@ -1,48 +1,66 @@
 import Cart from '../models/cartModel.js';
-
+import Product from '../models/productModel.js'
 class CartController {
   // Get Cart
-  async getCart(req, res) {
-    try {
-      // Find the cart for the logged-in user and populate the product field inside items
-      const cart = await Cart.findOne({ user: req.user.id }).populate('items.product');
-      
-      if (!cart) {
-        return res.status(404).json({ message: 'Cart not found' });
-      }
+ // Get Cart method in the CartController
+async getCart(req, res) {
+  try {
+    // Find the cart for the logged-in user and populate the product field with its details including price
+    const cart = await Cart.findOne({ user: req.user.id }).populate({
+      path: 'items.product',
+      select: 'name price image', // Ensure the name, price, and image fields are populated
+    });
 
-      res.status(200).json(cart);
-    } catch (error) {
-      res.status(500).json({ message: 'Error fetching cart', error: error.message });
+    if (!cart) {
+      return res.status(404).json({ message: 'Cart not found' });
     }
+
+    res.status(200).json(cart);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching cart', error: error.message });
   }
+}
+
 
   // Add to Cart
   async addToCart(req, res) {
     const userId = req.user.id; // User ID from the token
     const { productId, quantity } = req.body; // Product ID and quantity from request body
-    
+
     try {
-        let cart = await Cart.findOne({ user: userId });
-        if (!cart) {
-            // If the cart doesn't exist, create a new one
-            cart = new Cart({ user: userId, items: [] });
-        }
+      let cart = await Cart.findOne({ user: userId });
+      if (!cart) {
+        // If the cart doesn't exist, create a new one
+        cart = new Cart({ user: userId, items: [] });
+      }
 
-        // Check if item already exists in the cart
-        const existingItem = cart.items.find(item => item.product.toString() === productId);
-        if (existingItem) {
-            existingItem.quantity += quantity; // Update the quantity if it exists
-        } else {
-            // Add new item to cart
-            cart.items.push({ product: productId, quantity }); // Note: 'product' instead of 'productId'
-        }
+      // Check if item already exists in the cart
+      const existingItem = cart.items.find(item => item.product.toString() === productId);
+      
+      // Fetch product details to get the price
+      const product = await Product.findById(productId).select('price name image');
+      console.log(product.price)
+      if (!product) {
+        return res.status(404).json({ message: 'Product not found' });
+      }
 
-        // Save the cart
-        await cart.save();
-        res.status(201).json(cart); // Return the updated cart
+      if (existingItem) {
+        // Update the quantity if the product already exists in the cart
+        existingItem.quantity += quantity;
+      } else {
+        // Add new item to cart with the product's price
+        cart.items.push({ 
+          product: productId, 
+          quantity, 
+          price: product.price  // Store the product price in the cart
+        });
+      }
+
+      // Save the cart
+      await cart.save();
+      res.status(201).json(cart); // Return the updated cart
     } catch (error) {
-        res.status(500).json({ message: 'Server error', error: error.message });
+      res.status(500).json({ message: 'Server error', error: error.message });
     }
   }
 

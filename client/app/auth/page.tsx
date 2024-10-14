@@ -55,7 +55,7 @@ const AuthPage = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <h2 className="text-3xl font-semibold mb-6">{mode === 'signup' ? 'Sign Up' : 'Sign In'}</h2>
+      <h2 className="text-3xl font-semibold mb-6 text-gray-700">{mode === 'signup' ? 'Create account' : 'Sign In'}</h2>
 
       {error && <p className="text-red-500 mb-4">{error}</p>}
 
@@ -70,7 +70,7 @@ const AuthPage = () => {
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="mt-1 p-2 w-full border rounded-md"
+              className="mt-1 p-2 w-full border rounded-md text-gray-700"
               required
             />
           </div>
@@ -84,7 +84,7 @@ const AuthPage = () => {
             id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="mt-1 p-2 w-full border rounded-md"
+            className="mt-1 p-2 w-full border rounded-md text-gray-700"
             required
           />
         </div>
@@ -97,18 +97,18 @@ const AuthPage = () => {
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="mt-1 p-2 w-full border rounded-md"
+            className="mt-1 p-2 w-full border rounded-md text-gray-700"
             required
           />
         </div>
         <button
           type="submit"
           className={`w-full py-2 text-white font-semibold rounded-lg ${
-            loading ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-800'
+            loading ? 'bg-gray-400' : 'bg-yellow-600 hover:bg-blue-800'
           }`}
           disabled={loading}
         >
-          {loading ? 'Processing...' : mode === 'signup' ? 'Sign Up' : 'Sign In'}
+          {loading ? 'Processing...' : mode === 'signup' ? 'Create your Tradeline account' : 'Continue'}
         </button>
       </form>
     </div>

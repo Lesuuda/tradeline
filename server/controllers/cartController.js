@@ -39,7 +39,6 @@ async getCart(req, res) {
       
       // Fetch product details to get the price
       const product = await Product.findById(productId).select('price name image');
-      console.log(product.price)
       if (!product) {
         return res.status(404).json({ message: 'Product not found' });
       }

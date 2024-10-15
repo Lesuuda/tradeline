@@ -7,6 +7,7 @@ import AdminController from '../controllers/adminController.js';
 import adminMiddleware from '../middleware/adminMiddleware.js';
 import CategoryController from '../controllers/categoryController.js';
 import CartController from '../controllers/cartController.js';
+import upload from '../middleware/multer.js';
 
 const router = express.Router();
 
@@ -24,10 +25,10 @@ router.get('/auth/check', AuthController.checkAuth);
 //admin routes
 
 
-router.post('/admin/products/add-product', authMiddleware, adminMiddleware, AdminController.addProduct);
-router.put('/admin/products/update-product/:id', authMiddleware, adminMiddleware, AdminController.updateProduct);
+router.post('/admin/products/add-product', authMiddleware, adminMiddleware, upload.array('images', 5),  AdminController.addProduct);
+router.put('/admin/products/update-product/:id', authMiddleware, adminMiddleware, upload.array('images', 5), AdminController.updateProduct);
 router.delete('/admin/products/delete-product/:id', authMiddleware, adminMiddleware, AdminController.deleteProduct);
-router.get('/admin/orders', authMiddleware, adminMiddleware, AdminController.getAllOrders);
+router.get('/admin/orders', authMiddleware, AdminController.getAllOrders);
 
 //category routes
 

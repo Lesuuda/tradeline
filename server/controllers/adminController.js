@@ -1,9 +1,7 @@
-import { OrderedBulkOperation } from "mongodb";
 import Product from "../models/productModel.js";
 import Category from "../models/categoryModel.js";
 
 class AdminController {
-
     async addProduct(req, res) {
         try {
             const { name, description, price, category, stock } = req.body;
@@ -14,39 +12,50 @@ class AdminController {
                 return res.status(400).json({ error: 'Invalid category ID' });
             }
 
+            // Handle uploaded images
+            const imagePaths = req.files ? req.files.map(file => file.path) : [];
+
             // Create new product
             const newProduct = new Product({
                 name,
                 description,
                 price,
                 category,
-                stock
+                stock,
+                images: imagePaths // Save the image paths
             });
 
             await newProduct.save();
             res.status(201).json({ message: 'Product added successfully', product: newProduct });
         } catch (error) {
+            console.error('This is the error', error);
             res.status(500).json({ error: 'Error adding product', details: error });
         }
     }
+
     async updateProduct(req, res) {
         try {
-            const { id } = req.params;  // Extract `id` instead of `productId`
+            const { id } = req.params;
             const updates = req.body;
-    
+
+            // Handle image updates if new images are uploaded
+            if (req.files) {
+                const imagePaths = req.files.map(file => file.path);
+                updates.images = imagePaths;  // Update images in the product
+            }
+
             const updateProduct = await Product.findByIdAndUpdate(id, updates, { new: true });
             if (!updateProduct) {
                 return res.status(400).json({ error: 'Product not found' });
             }
+
             res.status(200).json({ message: 'Product updated successfully', product: updateProduct });
         } catch (error) {
             res.status(500).json({ error: 'Error updating product', details: error });
         }
     }
-    
 
     async deleteProduct(req, res) {
-        // delete product logic
         try {
             const { productId } = req.params;
             const deletedProduct = await Product.findByIdAndDelete(productId);
@@ -60,7 +69,6 @@ class AdminController {
     }
 
     async getAllOrders(req, res) {
-        // get all orders logic
         try {
             const orders = await Order.find();
             res.status(200).json({
@@ -73,4 +81,4 @@ class AdminController {
     }
 }
 
-export default new AdminController; // Path: server/routes/adminRoutes.js
+export default new AdminController();

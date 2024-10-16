@@ -15,7 +15,8 @@ interface Product {
   description: string;
   price: number;
   stock: number;
-  category: Category;
+  images: string[]; // Added images array
+  category: Category; // Assuming category is included
 }
 
 const ProductsPage = () => {
@@ -109,9 +110,14 @@ const ProductsPage = () => {
                 products.map((product) => (
                   <div
                     key={product._id}
-                    className="bg-gray-800 p-4 rounded-lg shadow-md cursor-pointer"  // Add cursor-pointer for UI feedback
-                    onClick={() => handleProductClick(product._id)}  // Navigate to product details page
+                    className="bg-gray-800 p-4 rounded-lg shadow-md cursor-pointer"
+                    onClick={() => handleProductClick(product._id)} // Navigate to product details page
                   >
+                    <img 
+                      src={`http://localhost:5000/${product.images[0]}`} // Display first image from images array
+                      alt={product.name}
+                      className="w-full h-40 object-cover mb-4" // Style the image
+                    />
                     <h3 className="text-lg font-semibold">{product.name}</h3>
                     <p className="text-sm text-gray-400">{product.description}</p>
                     <p className="text-sm text-gray-400">Price: ${product.price}</p>

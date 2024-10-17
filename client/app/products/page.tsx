@@ -116,7 +116,7 @@ const ProductsPage = () => {
                     <img 
                       src={`http://localhost:5000/${product.images[0]}`} // Display first image from images array
                       alt={product.name}
-                      className="w-full h-40 object-cover mb-4" // Style the image
+                      className="w-full h-50 object-cover mb-4" // Style the image
                     />
                     <h3 className="text-lg font-semibold">{product.name}</h3>
                     <p className="text-sm text-gray-400">{product.description}</p>

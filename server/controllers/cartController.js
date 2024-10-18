@@ -51,7 +51,10 @@ async getCart(req, res) {
         cart.items.push({ 
           product: productId, 
           quantity, 
-          price: product.price  // Store the product price in the cart
+          price: product.price,
+          name: product.name,
+          image: product.image,
+          
         });
       }
 

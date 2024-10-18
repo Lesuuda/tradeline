@@ -9,7 +9,7 @@ const CartPage = () => {
       _id: string;
       name: string;
       price: number;
-      image: string;
+      images: string[]; // Adjusted to reflect that images is an array
     };
     quantity: number;
   }
@@ -23,12 +23,11 @@ const CartPage = () => {
   const [error, setError] = useState("");
   const router = useRouter();
 
-  // Moved fetchCart outside of useEffect
   const fetchCart = async () => {
     try {
       const response = await fetch("http://localhost:5000/cart", {
         headers: {
-          "Authorization": `Bearer ${localStorage.getItem('token')}`, // Include the token
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Include the token
         },
       });
       if (!response.ok) {
@@ -43,46 +42,43 @@ const CartPage = () => {
     }
   };
 
-  // Fetch the cart when the component mounts
   useEffect(() => {
     fetchCart();
   }, []);
 
-  // Handle updating the quantity of a cart item
   const updateCartItem = async (productId: string, quantity: number) => {
     try {
       const response = await fetch("http://localhost:5000/cart/update-cart", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem('token')}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({ productId, quantity }),
       });
       if (!response.ok) {
         throw new Error("Failed to update cart");
       }
-      await fetchCart(); // Refresh the cart after updating
+      await fetchCart();
     } catch (err: any) {
       setError(err.message);
     }
   };
 
-  // Handle removing a product from the cart
   const removeCartItem = async (productId: string) => {
     try {
       const response = await fetch("http://localhost:5000/cart/remove-from-cart", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem('token')}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({ productId }),
       });
       if (!response.ok) {
         throw new Error("Failed to remove item from cart");
       }
-      await fetchCart(); // Refresh the cart after removing
+      await fetchCart();
     } catch (err: any) {
       setError(err.message);
     }
@@ -104,17 +100,17 @@ const CartPage = () => {
     <div className="container mx-auto py-8">
       <h2 className="text-2xl font-bold mb-6">Your Cart</h2>
       <ul>
-        {cart.items.map((item: any) => (
+        {cart.items.map((item) => (
           <li key={item.product._id} className="mb-4 flex justify-between items-center">
             <div className="flex items-center">
+              {/* Accessing the first image from the images array */}
               <img
-                src={item.product.image}
+                src={`${item.product.images}`} // Use the first image in the images array
                 alt={item.product.name}
                 className="w-16 h-16 object-cover rounded"
               />
               <div className="ml-4">
                 <p>{item.product.name}</p>
-                {/* Added safe check for price */}
                 <p>${item.product.price ? item.product.price.toFixed(2) : "Price not available"}</p>
               </div>
             </div>
@@ -146,7 +142,10 @@ const CartPage = () => {
       <div className="mt-6">
         <p className="text-lg font-bold">
           Total: $
-          {cart.items.reduce((total: number, item: any) => total + item.product.price * item.quantity, 0).toFixed(2)}
+          {cart.items.reduce(
+            (total, item) => total + item.product.price * item.quantity,
+            0
+          ).toFixed(2)}
         </p>
         <button
           className="mt-4 px-4 py-2 bg-blue-600 text-white rounded"

@@ -165,7 +165,7 @@ const ProductsPage = () => {
                     onClick={() => handleProductClick(product._id)} // Navigate to product details page
                   >
                     <img 
-                      src={`http://localhost:5000/${product.images[0]}`} // Display first image from images array
+                      src={`${product.images[0]}`} // Display first image from images array
                       alt={product.name}
                       className="w-50 h-50 object-cover mb-4" // Style the image
                     />

@@ -3,14 +3,30 @@ import Category from "../models/categoryModel.js";
 
 class ProductsController {
     
-    // Get all products with category details
+    // Get all products with category details and pagination
     async getProducts(req, res) {
         try {
-            const products = await Product.find().populate('category', 'name description');
+            const pageLimit = parseInt(req.query.limit) || 10;
+            const page = parseInt(req.query.page) || 1;
+
+            const totalProducts = await Product.countDocuments(); // Get total number of products
+            const totalPages = Math.ceil(totalProducts / pageLimit);
+
+            const products = await Product.find()
+                .populate('category', 'name description')
+                .skip((page - 1) * pageLimit) // Skip products for pagination
+                .limit(pageLimit); // Limit the number of products per page
+
             if (products.length === 0) {
                 return res.status(404).json({ message: 'No products found' });
             }
-            res.status(200).json(products);
+
+            res.status(200).json({
+                currentPage: page,
+                totalPages: totalPages,
+                totalProducts: totalProducts,
+                products: products,
+            });
         } catch (error) {
             res.status(500).json({ message: 'Server error', error: error.message });
         }
@@ -45,28 +61,40 @@ class ProductsController {
         }
     }
 
-    // Get products by category
+    // Get products by category with pagination
     async getProductsByCategory(req, res) {
         try {
-            // Use req.params.categoryId instead of category name
             const category = await Category.findById(req.params.categoryId);
             if (!category) {
                 return res.status(404).json({ message: 'Category not found' });
             }
-            
-            // Fetch products for this category
-            const products = await Product.find({ category: category._id }).populate('category', 'name description');
+
+            const pageLimit = parseInt(req.query.limit) || 20;
+            const page = parseInt(req.query.page) || 1;
+
+            const totalProducts = await Product.countDocuments({ category: category._id });
+            const categoryPages = Math.ceil(totalProducts / pageLimit);
+
+            const products = await Product.find({ category: category._id })
+                .populate('category', 'name description')
+                .skip((page - 1) * pageLimit)
+                .limit(pageLimit);
+
             if (products.length === 0) {
                 return res.status(404).json({ message: 'No products found for this category' });
             }
-    
-            res.status(200).json(products);
+
+            res.status(200).json({
+                currentPage: page,
+                totalPages: totalPages,
+                categoryPages: categoryPages,
+                totalProducts: totalProducts,
+                products: products,
+            });
         } catch (error) {
             res.status(500).json({ message: 'Server error', error: error.message });
         }
     }
-    
-    
 
     // Search products by name or description
     async searchProducts(req, res) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from 'next/navigation'; // Add this import
+import { useRouter } from 'next/navigation'; 
 import { useEffect, useState } from 'react';
 import SearchBar from './search/search';
 
@@ -26,7 +26,10 @@ const ProductsPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
-  const router = useRouter(); // Add router instance
+  const [currentPage, setCurrentPage] = useState(1); // Pagination state
+  const [totalPages, setTotalPages] = useState(1); // Total pages from backend
+  const [categoryPages, setCategoryPages] = useState(1);
+  const router = useRouter(); 
 
   // Fetch all categories on page load
   useEffect(() => {
@@ -47,25 +50,25 @@ const ProductsPage = () => {
     fetchCategories();
   }, []);
 
-  // Fetch all products or products by selected category
-  const fetchProducts = async (categoryId: string | null = null) => {
+  // Fetch all products or products by selected category with pagination
+  const fetchProducts = async (categoryId: string | null = null, page: number = 1) => {
     setLoading(true);
     setError('');
 
     const url = categoryId
-      ? `http://localhost:5000/category/${categoryId}`
-      : 'http://localhost:5000/products'; // Fetch all products if no category is selected
+      ? `http://localhost:5000/category/${categoryId}?page=${page}&limit=10`
+      : `http://localhost:5000/products?page=${page}&limit=10`;
 
     try {
       const res = await fetch(url);
       const data = await res.json();
       if (res.ok) {
-        if (!categoryId) {
-          // If no category is selected, shuffle products to display them randomly
-          const shuffledProducts = data.sort(() => Math.random() - 0.5);
-          setProducts(shuffledProducts);
+        setProducts(data.products);
+        setCurrentPage(data.currentPage);
+        if (categoryId) {
+          setTotalPages(categoryPages);
         } else {
-          setProducts(data);
+          setTotalPages(data.totalPages);
         }
       } else {
         throw new Error('Failed to fetch products');
@@ -76,15 +79,18 @@ const ProductsPage = () => {
       setLoading(false);
     }
   };
-   // Fetch products by search query
-   const fetchProductsBySearch = async (query: string) => {
+
+  // Fetch products by search query
+  const fetchProductsBySearch = async (query: string, page: number = 1) => {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch(`http://localhost:5000/search?q=${query}`);
+      const res = await fetch(`http://localhost:5000/search?q=${query}&page=${page}&limit=10`);
       const data = await res.json();
       if (res.ok) {
-        setProducts(data);
+        setProducts(data.products);
+        setCurrentPage(data.currentPage);
+        setTotalPages(data.totalPages);
       } else {
         throw new Error('No products match your search');
       }
@@ -97,22 +103,36 @@ const ProductsPage = () => {
 
   // Fetch all products on initial page load
   useEffect(() => {
-    fetchProducts();
-  }, []);
+    fetchProducts(null, currentPage);
+  }, [currentPage]);
 
   // Handle category selection
   const handleCategoryClick = (categoryId: string) => {
     setSelectedCategoryId(categoryId);
-    fetchProducts(categoryId); // Fetch products by selected category
+    setCurrentPage(1);    // Reset to first page
+    setTotalPages(1);     // Reset total pages
+    fetchProducts(categoryId, 1);
+  };
+
+  // Handle page navigation (for pagination)
+  const handlePageChange = (page: number) => {
+    if (selectedCategoryId) {
+      fetchProducts(selectedCategoryId, page);
+    } else {
+      fetchProducts(null, page);
+    }
   };
 
   // Navigate to product details page
   const handleProductClick = (productId: string) => {
     router.push(`/products/${productId}`);
   };
+
+  // Handle search
   const handleSearch = (query: string) => {
     setSelectedCategoryId(null);
-    fetchProductsBySearch(query);
+    setCurrentPage(1); 
+    fetchProductsBySearch(query, 1);
   };
 
   return (
@@ -132,7 +152,8 @@ const ProductsPage = () => {
                 className={`py-2 px-4 w-full text-left ${!selectedCategoryId ? 'bg-green-500 text-gray-900' : 'bg-gray-800'}`}
                 onClick={() => {
                   setSelectedCategoryId(null);
-                  fetchProducts(); // Fetch all products randomly
+                  setCurrentPage(1);
+                  fetchProducts(null, 1);
                 }}
               >
                 All
@@ -156,28 +177,49 @@ const ProductsPage = () => {
           {loading ? (
             <p>Loading products...</p>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {products.length > 0 ? (
-                products.map((product) => (
-                  <div
-                    key={product._id}
-                    className="bg-gray-100 p-4 rounded-lg shadow-md cursor-pointer w-50 h-50"
-                    onClick={() => handleProductClick(product._id)} // Navigate to product details page
-                  >
-                    <img 
-                      src={`${product.images[0]}`} // Display first image from images array
-                      alt={product.name}
-                      className="w-50 h-50 object-cover mb-4" // Style the image
-                    />
-                    <h3 className="text-lg text-gray-900 font-semibold">{product.name}</h3>
-                    <p className="text-sm text-gray-800 text-gray-400">{product.description}</p>
-                    <p className="text-sm text-gray-900">Price: ${product.price}</p>
-                    <p className="text-sm text-gray-400">Stock: {product.stock}</p>
-                  </div>
-                ))
-              ) : (
-                <p>No products available for this category.</p>
-              )}
+            <div>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {products.length > 0 ? (
+                  products.map((product) => (
+                    <div
+                      key={product._id}
+                      className="bg-gray-100 p-4 rounded-lg shadow-md cursor-pointer w-50 h-50"
+                      onClick={() => handleProductClick(product._id)} 
+                    >
+                      <img 
+                        src={product.images && product.images.length > 0 ? product.images[0] : '/fallback-image.jpg'} 
+                        alt={product.name}
+                        className="w-50 h-50 object-cover mb-4" 
+                      />
+                      <h3 className="text-lg text-gray-900 font-semibold">{product.name}</h3>
+                      <p className="text-sm text-gray-800 text-gray-400">{product.description}</p>
+                      <p className="text-sm text-gray-900">Price: ${product.price}</p>
+                      <p className="text-sm text-gray-400">Stock: {product.stock}</p>
+                    </div>
+                  ))
+                ) : (
+                  <p>No products available for this category.</p>
+                )}
+              </div>
+
+              {/* Pagination Controls */}
+              <div className="flex justify-center mt-4">
+                <button
+                  className="px-4 py-2 bg-gray-500 text-white rounded mr-2"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </button>
+                <span className="px-4 py-2 text-gray-900">Page {currentPage} of {totalPages}</span>
+                <button
+                  className="px-4 py-2 bg-gray-500 text-white rounded ml-2"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </button>
+              </div>
             </div>
           )}
         </div>

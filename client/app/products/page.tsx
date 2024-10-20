@@ -1,8 +1,9 @@
 "use client";
 
-import { useRouter } from 'next/navigation'; 
+import { useRouter } from 'next/navigation'; // Add this import
 import { useEffect, useState } from 'react';
 import SearchBar from './search/search';
+import CartIcon from '../cart/cartIcon';
 
 interface Category {
   _id: string;
@@ -28,8 +29,7 @@ const ProductsPage = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1); // Pagination state
   const [totalPages, setTotalPages] = useState(1); // Total pages from backend
-  const [categoryPages, setCategoryPages] = useState(1);
-  const router = useRouter(); 
+  const router = useRouter(); // Add router instance
 
   // Fetch all categories on page load
   useEffect(() => {
@@ -56,20 +56,16 @@ const ProductsPage = () => {
     setError('');
 
     const url = categoryId
-      ? `http://localhost:5000/category/${categoryId}?page=${page}&limit=10`
-      : `http://localhost:5000/products?page=${page}&limit=10`;
+      ? `http://localhost:5000/category/${categoryId}?page=${page}&limit=20`
+      : `http://localhost:5000/products?page=${page}&limit=20`; // Fetch paginated products
 
     try {
       const res = await fetch(url);
       const data = await res.json();
       if (res.ok) {
         setProducts(data.products);
-        setCurrentPage(data.currentPage);
-        if (categoryId) {
-          setTotalPages(categoryPages);
-        } else {
-          setTotalPages(data.totalPages);
-        }
+        setCurrentPage(data.currentPage); // Update current page from backend response
+        setTotalPages(data.totalPages);   // Update total pages from backend response
       } else {
         throw new Error('Failed to fetch products');
       }
@@ -85,7 +81,7 @@ const ProductsPage = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch(`http://localhost:5000/search?q=${query}&page=${page}&limit=10`);
+      const res = await fetch(`http://localhost:5000/search?q=${query}&page=${page}&limit=60`);
       const data = await res.json();
       if (res.ok) {
         setProducts(data.products);
@@ -109,9 +105,8 @@ const ProductsPage = () => {
   // Handle category selection
   const handleCategoryClick = (categoryId: string) => {
     setSelectedCategoryId(categoryId);
-    setCurrentPage(1);    // Reset to first page
-    setTotalPages(1);     // Reset total pages
-    fetchProducts(categoryId, 1);
+    setCurrentPage(1); // Reset to first page when changing category
+    fetchProducts(categoryId, 1); // Fetch products by selected category
   };
 
   // Handle page navigation (for pagination)
@@ -131,7 +126,7 @@ const ProductsPage = () => {
   // Handle search
   const handleSearch = (query: string) => {
     setSelectedCategoryId(null);
-    setCurrentPage(1); 
+    setCurrentPage(1); // Reset to first page when searching
     fetchProductsBySearch(query, 1);
   };
 
@@ -141,7 +136,7 @@ const ProductsPage = () => {
         {/* SearchBar component */}
         <SearchBar onSearch={handleSearch} />
       {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-
+      <CartIcon />
       <div className="flex gap-6">
         {/* Categories Menu */}
         <div className="w-1/4">
@@ -153,7 +148,7 @@ const ProductsPage = () => {
                 onClick={() => {
                   setSelectedCategoryId(null);
                   setCurrentPage(1);
-                  fetchProducts(null, 1);
+                  fetchProducts(null, 1); // Fetch all products randomly
                 }}
               >
                 All
@@ -179,17 +174,17 @@ const ProductsPage = () => {
           ) : (
             <div>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {products.length > 0 ? (
+                {products && products.length > 0 ? (
                   products.map((product) => (
                     <div
                       key={product._id}
                       className="bg-gray-100 p-4 rounded-lg shadow-md cursor-pointer w-50 h-50"
-                      onClick={() => handleProductClick(product._id)} 
+                      onClick={() => handleProductClick(product._id)} // Navigate to product details page
                     >
                       <img 
-                        src={product.images && product.images.length > 0 ? product.images[0] : '/fallback-image.jpg'} 
+                        src={`${product.images[0]}`} // Display first image from images array
                         alt={product.name}
-                        className="w-50 h-50 object-cover mb-4" 
+                        className="w-50 h-50 object-cover mb-4" // Style the image
                       />
                       <h3 className="text-lg text-gray-900 font-semibold">{product.name}</h3>
                       <p className="text-sm text-gray-800 text-gray-400">{product.description}</p>

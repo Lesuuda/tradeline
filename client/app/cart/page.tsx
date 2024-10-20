@@ -9,7 +9,7 @@ const CartPage = () => {
       _id: string;
       name: string;
       price: number;
-      images: string[]; // Adjusted to reflect that images is an array
+      images: string; // Image is a single string as per your backend
     };
     quantity: number;
   }
@@ -103,9 +103,9 @@ const CartPage = () => {
         {cart.items.map((item) => (
           <li key={item.product._id} className="mb-4 flex justify-between items-center">
             <div className="flex items-center">
-              {/* Accessing the first image from the images array */}
+              {/* Use product.image as it's a single image string from your backend */}
               <img
-                src={`${item.product.images}`} // Use the first image in the images array
+                src={item.product.images || '/fallback-image.jpg'} 
                 alt={item.product.name}
                 className="w-16 h-16 object-cover rounded"
               />

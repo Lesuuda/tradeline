@@ -1,1 +1,3 @@
-GET http://localhost:5000/categories/?page=2&limit=10
+
+
+GET http://localhost:5000/search?q=small&localhost:5000/products?page=1&limit=60

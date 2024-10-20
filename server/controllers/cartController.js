@@ -52,9 +52,8 @@ async getCart(req, res) {
           product: productId, 
           quantity, 
           price: product.price,
-          name: product.name,
           image: product.image,
-          
+
         });
       }
 

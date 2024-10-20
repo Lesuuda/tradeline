@@ -73,10 +73,11 @@ class ProductsController {
             const page = parseInt(req.query.page) || 1;
 
             const totalProducts = await Product.countDocuments({ category: category._id });
-            const categoryPages = Math.ceil(totalProducts / pageLimit);
+            const totalPages = Math.ceil(totalProducts / pageLimit);
 
             const products = await Product.find({ category: category._id })
                 .populate('category', 'name description')
+                .select('name description price stock images category')
                 .skip((page - 1) * pageLimit)
                 .limit(pageLimit);
 
@@ -87,7 +88,7 @@ class ProductsController {
             res.status(200).json({
                 currentPage: page,
                 totalPages: totalPages,
-                categoryPages: categoryPages,
+                totalPages: totalPages,
                 totalProducts: totalProducts,
                 products: products,
             });
@@ -100,25 +101,53 @@ class ProductsController {
     async searchProducts(req, res) {
         try {
             const searchQuery = req.query.q;
+            const page = parseInt(req.query.page) || 1;  // Page number, default to 1
+            const limit = parseInt(req.query.limit) || 20;  // Results per page, default to 20
+            const skip = (page - 1) * limit;  // Number of results to skip for pagination
+    
             if (!searchQuery) {
                 return res.status(400).json({ message: 'Search query is required' });
             }
+    
+            // Count the total number of matching products
+            const totalProducts = await Product.countDocuments({
+                $or: [
+                    { name: { $regex: searchQuery, $options: 'i' } },
+                    { description: { $regex: searchQuery, $options: 'i' } }
+                ]
+            });
+    
+            // Fetch the matching products with pagination
             const products = await Product.find({
                 $or: [
                     { name: { $regex: searchQuery, $options: 'i' } },
-                    { description: { $regex: searchQuery, $options: 'i' } },
+                    { description: { $regex: searchQuery, $options: 'i' } }
                 ]
-            }).populate('category', 'name description');
-            
+            })
+            .populate('category', 'name description')
+            .skip(skip)  // Skip the appropriate number of results
+            .limit(limit);  // Limit the number of results
+    
+            // If no products were found
             if (products.length === 0) {
                 return res.status(404).json({ message: 'No products match your search' });
             }
-
-            res.status(200).json(products);
+    
+            // Calculate the total number of pages
+            const totalPages = Math.ceil(totalProducts / limit);
+    
+            // Return the paginated results
+            res.status(200).json({
+                currentPage: page,
+                totalPages: totalPages,
+                totalProducts: totalProducts,
+                products: products,
+            });
         } catch (error) {
             res.status(500).json({ message: 'Server error', error: error.message });
         }
     }
+    
 
     // Get reviews of a specific product
     async getProductReviews(req, res) {

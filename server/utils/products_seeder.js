@@ -27,7 +27,7 @@ async function seedProducts() {
       return mongoose.connection.close(); // Close connection if no categories found
     }
 
-    for (let i = 0; i < 100; i++) { // Generate 1000 products
+    for (let i = 0; i < 1000; i++) { // Generate 1000 products
       const randomCategory = categories[Math.floor(Math.random() * categories.length)]; // Pick a random category
 
       const newProduct = new Product({

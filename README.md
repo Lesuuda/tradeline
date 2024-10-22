@@ -86,7 +86,7 @@ This is a fully functional e-commerce platform built using modern web technologi
 ### Product Management
 
 - **GET** `/products`: Get all products (supports search and pagination)
-- **POST** `/products/add`: Admin can add a new product
+- **POST** `admin/products/add`: Admin can add a new product
 - **PUT** `/products/:id`: Admin can update a product by ID
 - **DELETE** `/products/:id`: Admin can delete a product by ID
 

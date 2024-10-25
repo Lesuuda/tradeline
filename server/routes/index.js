@@ -8,7 +8,7 @@ import adminMiddleware from '../middleware/adminMiddleware.js';
 import CategoryController from '../controllers/categoryController.js';
 import CartController from '../controllers/cartController.js';
 import upload from '../middleware/multer.js';
-
+import OrderController from '../controllers/orderController.js';
 const router = express.Router();
 
 //authentication routes
@@ -60,5 +60,12 @@ router.get('/cart', authMiddleware, CartController.getCart);
 router.post('/cart/add-to-cart', authMiddleware, CartController.addToCart);
 router.delete('/cart/remove-from-cart', authMiddleware, CartController.removeFromCart);
 router.put('/cart/update-cart', authMiddleware, CartController.updateCart);
+
+//order routes
+router.post("/orders", authMiddleware, OrderController.createOrder);
+router.get("/", authMiddleware, OrderController.getUserOrders);
+router.get("/:orderId", authMiddleware, OrderController.getOrderById);
+router.put("/:orderId", authMiddleware, OrderController.updateOrderStatus);
+router.delete("/:orderId", authMiddleware, OrderController.deleteOrder);
 
 export default router; // Path: server/routes/index.j

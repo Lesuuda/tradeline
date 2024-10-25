@@ -1,5 +1,3 @@
-// CheckoutPage.tsx
-
 "use client";
 
 import React, { useEffect, useState } from 'react';
@@ -10,6 +8,13 @@ const CheckoutPage = () => {
   const [cart, setCart] = useState<Cart | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [country, setCountry] = useState("Kenya");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [zipCode, setZipCode] = useState("");
   
   const router = useRouter();
 
@@ -43,6 +48,58 @@ const CheckoutPage = () => {
       setError(err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handlePlaceOrder = async () => {
+    try {
+      // Ensure the cart and shipping information are valid
+      if (!cart || cart.items.length === 0) {
+        throw new Error("Your cart is empty");
+      }
+      if (!fullName || !email || !phoneNumber || !country || !city || !state || !zipCode) {
+        throw new Error("Please fill out all shipping information fields");
+      }
+
+      const orderData = {
+        products: cart.items.map(item => ({
+          product: item.product._id,
+          quantity: item.quantity
+        })),
+        totalPrice: cart.items.reduce(
+          (total, item) => total + item.product.price * item.quantity,
+          0
+        ),
+        shippingAddress: {
+          fullName,
+          email,
+          phoneNumber,
+          country,
+          city,
+          state,
+          zipCode
+        },
+        paymentMethod: 'cash-on-delivery',  // Example payment method
+        shippingMethod,
+      };
+
+      const response = await fetch("http://localhost:5000/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Include the token
+        },
+        body: JSON.stringify(orderData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to place order");
+      }
+
+      // After placing the order successfully, redirect to an order confirmation page or home
+      router.push("/orders/success");
+    } catch (err: any) {
+      setError(err.message);
     }
   };
 
@@ -91,24 +148,34 @@ const CheckoutPage = () => {
                 </button>
               </div>
 
+              {/* Shipping form */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <input
                   type="text"
                   placeholder="Full name"
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none placeholder-gray-900 text-gray-900"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
                 />
                 <input
                   type="email"
                   placeholder="Email address"
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none placeholder-gray-900 text-gray-900"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
                 <input
                   type="tel"
                   placeholder="Phone number"
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none placeholder-gray-900 text-gray-900"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
                 />
-                <select className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none text-gray-900">
-                  <option>Country</option>
+                <select
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none text-gray-900"
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value)}
+                >
                   <option>Kenya</option>
                   <option>Uganda</option>
                   <option>Tanzania</option>
@@ -118,16 +185,22 @@ const CheckoutPage = () => {
                   type="text"
                   placeholder="City"
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none placeholder-gray-900 text-gray-900"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
                 />
                 <input
                   type="text"
                   placeholder="State"
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none placeholder-gray-900 text-gray-900"
+                  value={state}
+                  onChange={(e) => setState(e.target.value)}
                 />
                 <input
                   type="text"
                   placeholder="ZIP Code"
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none placeholder-gray-900 text-gray-900"
+                  value={zipCode}
+                  onChange={(e) => setZipCode(e.target.value)}
                 />
               </div>
             </div>
@@ -189,8 +262,11 @@ const CheckoutPage = () => {
               </div>
             </div>
 
-            <button className="w-full mt-6 bg-blue-500 text-white py-3 rounded-lg font-semibold text-gray-900">
-              Pay Now
+            <button
+              onClick={handlePlaceOrder}
+              className="w-full mt-6 bg-blue-500 text-white py-3 rounded-lg font-semibold text-gray-900"
+            >
+              Place Order
             </button>
 
             <div className="mt-4 text-sm text-center text-gray-600">

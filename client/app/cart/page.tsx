@@ -9,7 +9,7 @@ const CartPage = () => {
       _id: string;
       name: string;
       price: number;
-      images: string; // Image is a single string as per your backend
+      images: string;
     };
     quantity: number;
   }

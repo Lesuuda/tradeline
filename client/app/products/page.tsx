@@ -140,36 +140,36 @@ const ProductsPage = () => {
       <CartIcon />
       <div className="flex gap-6">
         {/* Categories Menu */}
-        <div className="w-1/4">
+        <div className="w-30 h-60">
           <h2 className="text-xl font-semibold mb-4 text-gray-900">Categories</h2>
           <ul className="space-y-2">
-            <li>
+          <li>
+            <button
+              className={`py-1 px-1 w-full text-left ${!selectedCategoryId ? 'bg-purple-400 text-gray-900' : 'bg-white text-black'}`}
+              onClick={() => {
+                setSelectedCategoryId(null);
+                setCurrentPage(1);
+                fetchProducts(null, 1); // Fetch all products randomly
+              }}
+            >
+              All
+            </button>
+          </li>
+          {categories.map((category) => (
+            <li key={category._id}>
               <button
-                className={`py-2 px-4 w-full text-left ${!selectedCategoryId ? 'bg-green-500 text-gray-900' : 'bg-gray-800'}`}
-                onClick={() => {
-                  setSelectedCategoryId(null);
-                  setCurrentPage(1);
-                  fetchProducts(null, 1); // Fetch all products randomly
-                }}
+                className={`py-1 px-1 w-full text-left ${selectedCategoryId === category._id ? 'bg-purple-400 text-gray-900' : 'bg-white text-black'}`}
+                onClick={() => handleCategoryClick(category._id)}
               >
-                All
+                {category.name}
               </button>
             </li>
-            {categories.map((category) => (
-              <li key={category._id}>
-                <button
-                  className={`py-2 px-4 w-full text-left ${selectedCategoryId === category._id ? 'bg-green-500 text-white' : 'bg-gray-800'}`}
-                  onClick={() => handleCategoryClick(category._id)}
-                >
-                  {category.name}
-                </button>
-              </li>
-            ))}
+          ))}
           </ul>
         </div>
 
         {/* Products List */}
-        <div className="w-3/4">
+        <div className="w-50 h-50">
           {loading ? (
             <p>Loading products...</p>
           ) : (
@@ -201,19 +201,19 @@ const ProductsPage = () => {
               {/* Pagination Controls */}
               <div className="flex justify-center mt-4">
                 <button
-                  className="px-4 py-2 bg-gray-500 text-white rounded mr-2"
+                  className="px-4 py-2 bg-purple-400 text-white rounded mr-2"
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
                 >
-                  Previous
+                  &lt;
                 </button>
                 <span className="px-4 py-2 text-gray-900">Page {currentPage} of {totalPages}</span>
                 <button
-                  className="px-4 py-2 bg-gray-500 text-white rounded ml-2"
+                  className="px-4 py-2 bg-purple-400 text-white rounded ml-2"
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
                 >
-                  Next
+                  &gt;
                 </button>
               </div>
             </div>

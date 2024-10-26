@@ -1,23 +1,28 @@
-import { Inter, Roboto_Mono, Roboto_Serif, DynaPuff, Pacifico, Rowdies, Urbanist} from 'next/font/google'
-import './globals.css'
- 
+import { CartProvider } from '../app/cart/cartContext';  // Adjust the path if needed
+import './globals.css'; // Global styles
+import { ReactNode } from 'react';
+
+// Importing fonts from Google Fonts via next/font/google
+import { Inter, Roboto_Mono, Roboto_Serif, DynaPuff, Pacifico, Rowdies, Urbanist } from 'next/font/google';
+
+// Initializing fonts with CSS variable names
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
   display: 'swap',
-})
- 
+});
+
 const roboto_mono = Roboto_Mono({
   subsets: ['latin'],
   variable: '--font-roboto-mono',
   display: 'swap',
-})
+});
 
 const roboto_serif = Roboto_Serif({
   subsets: ['latin'],
   variable: '--font-roboto-serif',
   display: 'swap',
-})
+});
 
 const dyna_puff = DynaPuff({
   subsets: ['latin'],
@@ -25,7 +30,7 @@ const dyna_puff = DynaPuff({
   display: 'swap',
   style: ['normal'],
   weight: '400',
-})
+});
 
 const pacifico = Pacifico({
   subsets: ['latin'],
@@ -33,7 +38,7 @@ const pacifico = Pacifico({
   display: 'swap',
   style: ['normal'],
   weight: '400',
-})
+});
 
 const rowdies = Rowdies({
   subsets: ['latin'],
@@ -41,27 +46,30 @@ const rowdies = Rowdies({
   display: 'swap',
   style: ['normal'],
   weight: '300',
-})
+});
 
 const urbanist = Urbanist({
   subsets: ['latin'],
-  variable: '--font-indie-flower',
+  variable: '--font-urbanist',
   display: 'swap',
   style: ['normal'],
   weight: '100',
-})
- 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+});
+
+// Defining the RootLayout component with CartProvider and font styling
+interface RootLayoutProps {
+  children: ReactNode;
+}
+
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className={`${inter.variable} ${roboto_mono.variable} ${roboto_serif.variable} ${dyna_puff.variable} ${pacifico.variable} ${rowdies.variable} ${urbanist.variable}`}>
       <body>
-        <h1>My App</h1>
-        <div>{children}</div>
+        <CartProvider>
+          <h1>My App</h1>
+          <div>{children}</div>
+        </CartProvider>
       </body>
     </html>
-  )
+  );
 }

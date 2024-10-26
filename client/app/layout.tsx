@@ -1,22 +1,67 @@
-// app/layout.tsx
+import { Inter, Roboto_Mono, Roboto_Serif, DynaPuff, Pacifico, Rowdies, Urbanist} from 'next/font/google'
+import './globals.css'
+ 
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+})
+ 
+const roboto_mono = Roboto_Mono({
+  subsets: ['latin'],
+  variable: '--font-roboto-mono',
+  display: 'swap',
+})
 
-import { CartProvider } from '../app/cart/cartContext';  // Adjust the path as necessary
-import './globals.css'; // Your global styles
+const roboto_serif = Roboto_Serif({
+  subsets: ['latin'],
+  variable: '--font-roboto-serif',
+  display: 'swap',
+})
 
-import { ReactNode } from 'react';
+const dyna_puff = DynaPuff({
+  subsets: ['latin'],
+  variable: '--font-dyna-puff',
+  display: 'swap',
+  style: ['normal'],
+  weight: '400',
+})
 
-interface RootLayoutProps {
-  children: ReactNode;
-}
+const pacifico = Pacifico({
+  subsets: ['latin'],
+  variable: '--font-pacifico',
+  display: 'swap',
+  style: ['normal'],
+  weight: '400',
+})
 
-export default function RootLayout({ children }: RootLayoutProps) {
+const rowdies = Rowdies({
+  subsets: ['latin'],
+  variable: '--font-rowdies',
+  display: 'swap',
+  style: ['normal'],
+  weight: '300',
+})
+
+const urbanist = Urbanist({
+  subsets: ['latin'],
+  variable: '--font-indie-flower',
+  display: 'swap',
+  style: ['normal'],
+  weight: '100',
+})
+ 
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} ${roboto_mono.variable} ${roboto_serif.variable} ${dyna_puff.variable} ${pacifico.variable} ${rowdies.variable} ${urbanist.variable}`}>
       <body>
-        <CartProvider>
-          {children}
-        </CartProvider>
+        <h1>My App</h1>
+        <div>{children}</div>
       </body>
     </html>
-  );
+  )
 }

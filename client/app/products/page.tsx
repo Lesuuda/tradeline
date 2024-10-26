@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'; // Add this import
 import { useEffect, useState } from 'react';
 import SearchBar from './search/search';
 import CartIcon from '../cart/cartIcon';
+import '../globals.css';
 
 interface Category {
   _id: string;
@@ -186,10 +187,10 @@ const ProductsPage = () => {
                         alt={product.name}
                         className="w-50 h-50 object-cover mb-4" // Style the image
                       />
-                      <h3 className="text-lg text-gray-900 font-semibold">{product.name}</h3>
-                      <p className="text-sm text-gray-800 text-gray-400">{product.description}</p>
-                      <p className="text-sm text-gray-900">Price: ${product.price}</p>
-                      <p className="text-sm text-gray-400">Stock: {product.stock}</p>
+                      <h3 className="text-[20px] text-gray-700">{product.name}</h3>
+                      {/* <p className="text-[12px] text-gray-800 text-gray-400">{product.description}</p> */}
+                      <h4 className="text-[16px] text-gray-900 font-semibold">${product.price}</h4>
+                      <p className="text-sm text-gray-400">{product.stock} items left</p>
                     </div>
                   ))
                 ) : (

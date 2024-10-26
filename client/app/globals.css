@@ -24,4 +24,25 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+} 
+
+html {
+  font-family: var(--font-inter);
+}
+h2 {
+  font-family: var(--font-dynaf-puff);
+}
+h3 {
+  font-family: var(--font-rowdies);
+}
+h4 {
+  font-family: var(--font-urbanist);
+}
+
+button {
+  font-family: var(--font-roboto-mono);
+}
+
+div {
+  font-family: var(--font-roboto-serif);
 }

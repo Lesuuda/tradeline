@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useCart } from '../../cart/cartContext';
 import { FaShoppingCart, FaHeart } from 'react-icons/fa';
+import HeaderIcons from '@/app/components/headers';
 
 interface Product {
   _id: string;
@@ -63,6 +64,7 @@ const ProductDetails = ({ params }: { params: { id: string } }) => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <HeaderIcons />
       <div className="p-8 bg-white text-gray-900 rounded-lg shadow-lg w-[48rem]">
         <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
         <img

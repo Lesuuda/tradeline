@@ -97,7 +97,8 @@ const CheckoutPage = () => {
       }
 
       // After placing the order successfully, redirect to an order confirmation page or home
-      router.push("/orders/success");
+      alert("Order placed successfully!");
+      router.push("/products");
     } catch (err: any) {
       setError(err.message);
     }
@@ -264,13 +265,13 @@ const CheckoutPage = () => {
 
             <button
               onClick={handlePlaceOrder}
-              className="w-full mt-6 bg-blue-500 text-white py-3 rounded-lg font-semibold text-gray-900"
+              className="w-full mt-6 bg-purple-500 text-white py-3 rounded-lg font-semibold text-gray-900"
             >
               Place Order
             </button>
 
             <div className="mt-4 text-sm text-center text-gray-600">
-              <span>Secure Checkout - SSL Encrypted</span>
+              
             </div>
           </div>
         </div>

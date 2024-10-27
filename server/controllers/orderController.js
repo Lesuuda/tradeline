@@ -1,31 +1,45 @@
 import Order from "../models/orderModel.js";
+import Cart from "../models/cartModel.js";
 
 class OrderController {
   // Create a new order
-  async createOrder(req, res) {
-    try {
-      const { products, totalPrice, paymentMethod, shippingAddress } = req.body;
-      const userId = req.user._id;  // Assuming the user object is attached to the request after authentication
-
-      const order = new Order({
-        user: userId,
-        products,
-        totalPrice,
-        paymentMethod,
-        shippingAddress,
-      });
-
-      await order.save();
-      res.status(201).json({ message: "Order created successfully", order });
-    } catch (err) {
-      res.status(500).json({ message: "Error creating order", error: err.message });
+    async createOrder(req, res) {
+      try {
+        const { products, totalPrice, paymentMethod, shippingAddress, shippingMethod } = req.body;
+        const userId = req.user.id; // Authenticated user
+  
+        // Check if cart exists for the user
+        const cart = await Cart.findOne({ user: userId });
+        if (!cart || cart.items.length === 0) {
+          return res.status(400).json({ message: "Your cart is empty" });
+        }
+  
+        // Create the order
+        const order = new Order({
+          user: userId,
+          products,
+          totalPrice,
+          paymentMethod,
+          shippingAddress,
+          shippingMethod,
+          status: 'Pending',
+        });
+  
+        await order.save();
+  
+        // Clear the cart after placing the order
+        await Cart.findOneAndUpdate({ user: userId }, { items: [] });
+  
+        res.status(201).json({ message: "Order placed successfully", order });
+      } catch (err) {
+        res.status(500).json({ message: "Error placing order", error: err.message });
+      }
     }
-  }
 
   // Get all orders for the authenticated user
   async getUserOrders(req, res) {
     try {
-      const userId = req.user._id;  // Authenticated user ID
+      const userId = req.user.id;  // Authenticated user ID
       const orders = await Order.find({ user: userId }).populate('products.product');
     
       res.status(200).json({ orders });

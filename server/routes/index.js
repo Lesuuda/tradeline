@@ -63,7 +63,7 @@ router.put('/cart/update-cart', authMiddleware, CartController.updateCart);
 
 //order routes
 router.post("/orders", authMiddleware, OrderController.createOrder);
-router.get("/", authMiddleware, OrderController.getUserOrders);
+router.get("/orders", authMiddleware, OrderController.getUserOrders);
 router.get("/:orderId", authMiddleware, OrderController.getOrderById);
 router.put("/:orderId", authMiddleware, OrderController.updateOrderStatus);
 router.delete("/:orderId", authMiddleware, OrderController.deleteOrder);

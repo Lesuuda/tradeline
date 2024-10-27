@@ -28,12 +28,10 @@ const CartPage = () => {
     try {
       const response = await fetch("http://localhost:5000/cart", {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`, // Include the token
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      if (!response.ok) {
-        throw new Error("Failed to fetch cart");
-      }
+      if (!response.ok) throw new Error("Failed to fetch cart");
       const data = await response.json();
       setCart(data);
     } catch (err: any) {
@@ -57,9 +55,7 @@ const CartPage = () => {
         },
         body: JSON.stringify({ productId, quantity }),
       });
-      if (!response.ok) {
-        throw new Error("Failed to update cart");
-      }
+      if (!response.ok) throw new Error("Failed to update cart");
       await fetchCart();
     } catch (err: any) {
       setError(err.message);
@@ -76,49 +72,36 @@ const CartPage = () => {
         },
         body: JSON.stringify({ productId }),
       });
-      if (!response.ok) {
-        throw new Error("Failed to remove item from cart");
-      }
+      if (!response.ok) throw new Error("Failed to remove item from cart");
       await fetchCart();
     } catch (err: any) {
       setError(err.message);
     }
   };
 
-  if (loading) {
-    return <p>Loading cart...</p>;
-  }
-
-  if (error) {
-    return <p className="text-red-500">{error}</p>;
-  }
-
-  if (!cart || cart.items.length === 0) {
-    return <p>Your cart is empty</p>;
-  }
+  if (loading) return <p>Loading cart...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
+  if (!cart || cart.items.length === 0) return <p>Your cart is empty</p>;
 
   return (
-    <div className="container mx-auto py-8 ">
+    <div className="container mx-auto py-8">
       <HeaderIcons />
-      <h2 className="text-2xl font-bold mb-6">Your Cart</h2>
-      <ul>
+      <h2 className="text-3xl font-bold text-center mb-8">Shopping Cart</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {cart.items.map((item) => (
-          <li key={item.product._id} className="mb-4 flex justify-between items-center">
-            <div className="flex items-center">
-              {/* Use product.image as it's a single image string from your backend */}
-              <img
-                src={item.product.images || '/fallback-image.jpg'} 
-                alt={item.product.name}
-                className="w-16 h-16 object-cover rounded"
-              />
-              <div className="ml-4">
-                <p>{item.product.name}</p>
-                <p>${item.product.price ? item.product.price.toFixed(2) : "Price not available"}</p>
-              </div>
+          <div key={item.product._id} className="border border-gray-300 p-4 rounded-lg shadow-md flex flex-col">
+            <img
+              src={item.product.images || '/fallback-image.jpg'}
+              alt={item.product.name}
+              className="w-full h-48 object-cover rounded-md mb-4"
+            />
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold">{item.product.name}</h3>
+              <p className="text-gray-700 mt-2">${item.product.price.toFixed(2)}</p>
             </div>
-            <div className="flex items-center">
+            <div className="flex justify-between items-center mt-4">
               <button
-                className="px-2 py-1 bg-purple-300 rounded"
+                className="px-3 py-1 bg-pink-200 rounded-l-lg hover:bg-gray-300"
                 onClick={() => updateCartItem(item.product._id, item.quantity - 1)}
                 disabled={item.quantity <= 1}
               >
@@ -126,31 +109,30 @@ const CartPage = () => {
               </button>
               <span className="px-4">{item.quantity}</span>
               <button
-                className="px-2 py-1 bg-purple-300 rounded"
+                className="px-3 py-1 bg-pink-200 rounded-r-lg hover:bg-gray-300"
                 onClick={() => updateCartItem(item.product._id, item.quantity + 1)}
               >
                 +
               </button>
               <button
-                className="ml-4 px-2 py-1 bg-red-500 text-white rounded"
+                className="ml-4 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
                 onClick={() => removeCartItem(item.product._id)}
               >
-                Remove
+                Drop Item
               </button>
             </div>
-          </li>
+          </div>
         ))}
-      </ul>
-      <div className="mt-6">
-        <p className="text-lg font-bold">
-          Total: $
-          {cart.items.reduce(
-            (total, item) => total + item.product.price * item.quantity,
-            0
-          ).toFixed(2)}
-        </p>
+      </div>
+      <div className="mt-8 border-t border-gray-300 pt-6">
+        <div className="flex justify-between items-center mb-4">
+          <p className="text-2xl font-bold">Total:</p>
+          <p className="text-2xl font-bold">
+            ${cart.items.reduce((total, item) => total + item.product.price * item.quantity, 0).toFixed(2)}
+          </p>
+        </div>
         <button
-          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded"
+          className="w-full md:w-1/2 lg:w-1/3 mx-auto block bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-200"
           onClick={() => router.push("/checkout")}
         >
           Proceed to Checkout

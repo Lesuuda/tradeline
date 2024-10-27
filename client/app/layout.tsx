@@ -1,4 +1,7 @@
-import { CartProvider } from '../app/cart/cartContext';  // Adjust the path if needed
+'use client'
+
+import { CartProvider } from '../app/cart/cartContext';
+import HeaderIcons from './components/headers'; // Corrected import path for HeaderIcons
 import './globals.css'; // Global styles
 import { ReactNode } from 'react';
 
@@ -66,7 +69,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <html lang="en" className={`${inter.variable} ${roboto_mono.variable} ${roboto_serif.variable} ${dyna_puff.variable} ${pacifico.variable} ${rowdies.variable} ${urbanist.variable}`}>
       <body>
         <CartProvider>
-          <h1>My App</h1>
+          <HeaderIcons />
           <div>{children}</div>
         </CartProvider>
       </body>

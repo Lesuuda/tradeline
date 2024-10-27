@@ -110,8 +110,39 @@ class AuthController {
   }
 
   async getProfile(req, res) {
-    // get profile logic
+    try {
+      const authHeader = req.headers['authorization'];
+      const token = authHeader && authHeader.split(' ')[1]; // Extract the Bearer token
+  
+      if (!token) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+  
+      // Verify the token
+      jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+        if (err) {
+          return res.status(403).json({ message: 'Forbidden' });
+        }
+  
+        // Fetch the user details from the database
+        const user = await User.findById(decoded.userId).select('-password'); // Exclude password
+        if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+        }
+  
+        // Return user information
+        res.status(200).json({
+          id: user._id,
+          username: user.username, // Adjust this if the field is named differently
+          email: user.email,
+          role: user.role,
+        });
+      });
+    } catch (error) {
+      res.status(500).json({ error: 'Server error', details: error });
+    }
   }
+  
 
   async updateProfile(req, res) {
     // update profile logic

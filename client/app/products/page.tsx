@@ -2,8 +2,6 @@
 
 import { useRouter } from 'next/navigation'; // Add this import
 import { useEffect, useState } from 'react';
-import SearchBar from './search/search';
-import CartIcon from '../cart/cartIcon';
 import '../globals.css';
 
 interface Category {
@@ -134,10 +132,7 @@ const ProductsPage = () => {
   return (
     <div className="min-h-screen p-6 bg-gray-50 text-white">
       
-        {/* SearchBar component */}
-        <SearchBar onSearch={handleSearch} />
       {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-      <CartIcon />
       <div className="flex gap-6">
         {/* Categories Menu */}
         <div className="w-30 h-60">

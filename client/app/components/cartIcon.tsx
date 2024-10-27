@@ -1,4 +1,3 @@
-"use client";
 import { useEffect, useState } from "react";
 import { FaShoppingCart } from "react-icons/fa";
 import Link from "next/link";
@@ -18,7 +17,7 @@ const CartIcon = ({ size = 30 }) => { // Allow icon size customization
       if (response.ok) {
         const cartData = await response.json();
         const totalItems = cartData.items.reduce(
-          (total, item) => total + item.quantity,
+          (total: number, item: { quantity: number }) => total + item.quantity,
           0
         );
         setCartItemsCount(totalItems);
@@ -35,17 +34,15 @@ const CartIcon = ({ size = 30 }) => { // Allow icon size customization
   }, []);
 
   return (
-    <Link href="/cart">
-      <div className="fixed top-4 right-4"> {/* Positioned top-right of the page */}
-        <FaShoppingCart size={size} color="#ff69b4" /> {/* Pink icon */}
-        {cartItemsCount > 0 && (
-          <span
-            className="absolute -top-2 -right-3 bg-white text-black text-xs rounded-full h-5 w-5 flex items-center justify-center"
-          >
-            {cartItemsCount}
-          </span>
-        )}
-      </div>
+    <Link href="/cart" className="relative"> {/* Relative positioning to allow badge alignment */}
+      <FaShoppingCart size={size} color="#ff69b4" /> {/* Pink icon */}
+      {cartItemsCount > 0 && (
+        <span
+          className="absolute -top-2 -right-3 bg-white text-black text-sm font-semibold rounded-full h-5 w-5 flex items-center justify-center"
+        >
+          {cartItemsCount}
+        </span>
+      )}
     </Link>
   );
 };

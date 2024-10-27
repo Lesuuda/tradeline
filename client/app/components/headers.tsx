@@ -41,16 +41,16 @@ const HeaderIcons = () => {
       {/* Logo on the Left */}
       <div className="flex items-center">
         <Image
-          src="/logo.png"
+          src="/images/logo.jpg"
           alt="Logo"
-          width={50}
-          height={50}
+          width={100}
+          height={60}
           priority
         />
       </div>
 
       {/* Search Bar in the Center */}
-      <div className="flex-1 flex justify-center">
+      <div className="flex-grow flex justify-center">
         <SearchBar onSearch={handleSearch} />
       </div>
 

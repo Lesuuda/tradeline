@@ -69,7 +69,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <html lang="en" className={`${inter.variable} ${roboto_mono.variable} ${roboto_serif.variable} ${dyna_puff.variable} ${pacifico.variable} ${rowdies.variable} ${urbanist.variable}`}>
       <body>
         <CartProvider>
-          <HeaderIcons />
+        
           <div>{children}</div>
         </CartProvider>
       </body>

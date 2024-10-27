@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import HeaderIcons from "../components/headers";
 
 const CartPage = () => {
   interface CartItem {
@@ -97,7 +98,8 @@ const CartPage = () => {
   }
 
   return (
-    <div className="container mx-auto py-8">
+    <div className="container mx-auto py-8 ">
+      <HeaderIcons />
       <h2 className="text-2xl font-bold mb-6">Your Cart</h2>
       <ul>
         {cart.items.map((item) => (
@@ -116,7 +118,7 @@ const CartPage = () => {
             </div>
             <div className="flex items-center">
               <button
-                className="px-2 py-1 bg-gray-300 rounded"
+                className="px-2 py-1 bg-purple-300 rounded"
                 onClick={() => updateCartItem(item.product._id, item.quantity - 1)}
                 disabled={item.quantity <= 1}
               >
@@ -124,7 +126,7 @@ const CartPage = () => {
               </button>
               <span className="px-4">{item.quantity}</span>
               <button
-                className="px-2 py-1 bg-gray-300 rounded"
+                className="px-2 py-1 bg-purple-300 rounded"
                 onClick={() => updateCartItem(item.product._id, item.quantity + 1)}
               >
                 +

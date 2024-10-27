@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'; // Add this import
 import { useEffect, useState } from 'react';
 import '../globals.css';
-
+import HeaderIcons from '../components/headers';
 interface Category {
   _id: string;
   name: string;
@@ -131,7 +131,7 @@ const ProductsPage = () => {
 
   return (
     <div className="min-h-screen p-6 bg-gray-50 text-white">
-      
+      < HeaderIcons/>
       {error && <p className="text-red-500 text-center mb-4">{error}</p>}
       <div className="flex gap-6">
         {/* Categories Menu */}

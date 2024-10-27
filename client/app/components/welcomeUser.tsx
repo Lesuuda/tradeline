@@ -34,7 +34,7 @@ const WelcomeUser = () => {
   }, []);
 
   return (
-    <span className="text-pink-600 font-semibold">Hi, {username}</span>
+    <span className="text-gray-900 font-semibold">Hi, {username}</span>
   );
 };
 

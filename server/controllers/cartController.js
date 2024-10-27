@@ -8,7 +8,7 @@ async getCart(req, res) {
     // Find the cart for the logged-in user and populate the product field with its details including price
     const cart = await Cart.findOne({ user: req.user.id }).populate({
       path: 'items.product',
-      select: 'name price image', // Ensure the name, price, and image fields are populated
+      select: 'name price images', // Ensure the name, price, and image fields are populated
     });
 
     if (!cart) {
@@ -52,7 +52,7 @@ async getCart(req, res) {
           product: productId, 
           quantity, 
           price: product.price,
-          image: product.image,
+          images: product.images,
 
         });
       }

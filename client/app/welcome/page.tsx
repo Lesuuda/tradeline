@@ -7,7 +7,7 @@ const WelcomePage = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-indigo-500 to-purple-500 text-white">
-      <h1 className="text-6xl font-bold mb-6">Welcome to Our Store</h1>
+      <h1 className="text-6xl font-bold mb-6">Welcooome to Our Store</h1>
       <p className="text-lg mb-8">Discover our wide range of products and start shopping now!</p>
 
       <div className="space-x-4">

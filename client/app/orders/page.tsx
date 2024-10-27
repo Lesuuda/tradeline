@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import HeaderIcons from '../components/headers';
 
 const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
@@ -45,13 +46,22 @@ const OrdersPage = () => {
   }
 
   return (
-    <div className="min-h-screen p-8 bg-gray-50">
-      <h2 className="text-3xl font-bold text-violet-900 mb-8">My Orders</h2>
+    <div className="min-h-screen bg-gray-50 text-black">
+      {/* Fixed header */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-gray-100">
+        <HeaderIcons />
+      </div>
 
-      <div className="space-y-6">
-        {orders.map((order, index) => (
-          <OrderCard key={index} order={order} />
-        ))}
+      {/* Main content with padding-top to offset the header */}
+      <div className="p-8 pt-24">
+        <h2 className="text-3xl font-bold text-violet-900 mb-8">My Orders</h2>
+
+        <div className="space-y-6">
+          {orders.map((order, index) => (
+            <OrderCard key={index} order={order} />
+            
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -93,7 +103,7 @@ const OrderCard = ({ order }: { order: Order }) => {
         <div>
           <h3 className="text-xl font-semibold text-gray-800">Order #{order._id}</h3>
           <p className="text-gray-600">Date: {new Date(order.createdAt).toLocaleDateString()}</p>
-          <p className="text-gray-600">Total: ${order.totalPrice.toFixed(2)}</p>
+          <p className="text-pink-600">Total Price: ${order.totalPrice.toFixed(2)}</p>
         </div>
         <button
           onClick={toggleExpand}
@@ -105,7 +115,7 @@ const OrderCard = ({ order }: { order: Order }) => {
 
       {expanded && (
         <div className="mt-4 space-y-4 border-t border-gray-200 pt-4">
-          <h4 className="text-lg font-medium text-indigo-500 text-semibold">Products</h4>
+          <h4 className="text-lg font-bold text-indigo-500">Products</h4>
           {order.products.map((product, idx) => (
             <div
               key={idx}
@@ -115,7 +125,7 @@ const OrderCard = ({ order }: { order: Order }) => {
                 <p className="text-gray-800 font-semibold">{product.product.name}</p>
                 <p className="text-gray-600">Quantity: {product.quantity}</p>
               </div>
-              <p className="text-gray-800">${(product.product.price * product.quantity).toFixed(2)}</p>
+              <p className="text-yellow-800">${(product.product.price * product.quantity).toFixed(2)}</p>
             </div>
           ))}
 
@@ -129,7 +139,9 @@ const OrderCard = ({ order }: { order: Order }) => {
             </p>
           </div>
 
-          <p className="mt-4 font-semibold text-gray-600">Status: {order.status}</p>
+          <p className="mt-4 font-semibold text-gray-600">
+            Status: <span style={{ color: 'green' }}>{order.status}</span>
+          </p>
         </div>
       )}
     </div>

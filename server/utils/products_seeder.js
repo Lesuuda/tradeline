@@ -1,12 +1,16 @@
-
 import mongoose from 'mongoose';
-import { faker } from '@faker-js/faker';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
 import Product from '../models/productModel.js';
-import Category from '../models/categoryModel.js'; 
+import Category from '../models/categoryModel.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const mongoURI = 'mongodb://localhost:27017/tradeline';
 
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(mongoURI)
   .then(() => {
     console.log('MongoDB connected');
     seedProducts(); // Start seeding products after connection
@@ -19,32 +23,54 @@ async function seedProducts() {
   try {
     await Product.deleteMany({}); // Clear existing products (optional)
 
-    // Fetch all categories from the database
-    const categories = await Category.find();
-
-    if (categories.length === 0) {
-      console.error('No categories found. Please seed categories first.');
-      return mongoose.connection.close(); // Close connection if no categories found
+    // Find the "phones" category in the database
+    const phonesCategory = await Category.findOne({ name: 'Phones' });
+    if (!phonesCategory) {
+      console.error('Phones category not found. Please add it first.');
+      return mongoose.connection.close(); // Close connection if category not found
     }
 
-    for (let i = 0; i < 1000; i++) { // Generate 1000 products
-      const randomCategory = categories[Math.floor(Math.random() * categories.length)]; // Pick a random category
+    // Path to your local images folder
+    const imagesFolderPath = path.join(__dirname, '../images/phones');
 
+    // Loop through images 1 to 76, checking both .jpg and .jpeg extensions
+    for (let i = 1; i <= 76; i++) {
+      let imageFileName = `${i}.jpg`;
+      let imagePath = path.join(imagesFolderPath, imageFileName);
+
+      // Check if the .jpg file exists; if not, try the .jpeg extension
+      if (!fs.existsSync(imagePath)) {
+        imageFileName = `${i}.jpeg`;
+        imagePath = path.join(imagesFolderPath, imageFileName);
+      }
+
+      // If neither .jpg nor .jpeg exists, log a warning and skip this image
+      if (!fs.existsSync(imagePath)) {
+        console.warn(`Image ${i}.jpg or ${i}.jpeg does not exist in ${imagesFolderPath}`);
+        continue;
+      }
+
+      // Generate a random phone name using brand names and series numbers
+      const brands = ['Samsung', 'iPhone', 'Redmi', 'Oppo', 'Realme', 'Nokia', 'Nothing'];
+      const randomBrand = brands[Math.floor(Math.random() * brands.length)];
+      const series = Math.random() > 0.5 ? Math.floor(Math.random() * 10) + 1 : String.fromCharCode(65 + Math.floor(Math.random() * 26));
+      const phoneName = `${randomBrand} ${series}`;
+
+      // Create a new product
       const newProduct = new Product({
-        name: faker.commerce.productName(),
-        description: faker.lorem.paragraph(),
-        price: parseFloat(faker.commerce.price()),
-        stock: faker.number.int({ min: 0, max: 100 }),
-        images: [
-          faker.image.avatarGitHub(), // Random image URL
-        ],
-        category: randomCategory._id, // Assign category ID
+        name: phoneName,
+        description: 'A high-quality smartphone with advanced features.',
+        price: parseFloat((Math.random() * (1000 - 100) + 100).toFixed(2)), // Random price between 100 and 1000
+        stock: Math.floor(Math.random() * 100), // Random stock between 0 and 100
+        images: [imageFileName],
+        category: phonesCategory._id,
       });
 
       await newProduct.save(); // Save each product
+      console.log(`Seeded product: ${phoneName} with image ${imageFileName}`);
     }
 
-    console.log('Products seeded!');
+    console.log('All products seeded successfully!');
     mongoose.connection.close(); // Close connection after seeding
   } catch (error) {
     console.error('Error seeding products:', error);

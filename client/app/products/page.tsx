@@ -139,7 +139,6 @@ const ProductsPage = () => {
         <HeaderIcons />
       </div>
 
-      {/* Adds padding-top to account for the header's height */}
       <div className="p-6 pt-20">
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
         <div className="flex gap-6">
@@ -176,56 +175,58 @@ const ProductsPage = () => {
               <p>Loading products...</p>
             ) : (
               <div>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                  {products && products.length > 0 ? (
-                    products.map((product) => (
-                      <div
-                        key={product._id}
-                        className="bg-gray-100 p-4 rounded-lg shadow-md cursor-pointer w-50 h-50 relative"
-                        onClick={() => handleProductClick(product._id)}
-                      >
-                        <img 
-                          src={`${product.images[0]}`}
-                          alt={product.name}
-                          className="w-50 h-50 object-cover mb-4"
-                        />
-                        <h3 className="text-[20px] text-gray-700">{product.name}</h3>
-                        <h4 className="text-[16px] text-gray-900 font-semibold">${product.price}</h4>
-                        <p className="text-sm text-gray-400">{product.stock} items left</p>
-                        
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            addToCart(product._id, 1);
-                          }}
-                          className="absolute bottom-2 right-2 px-6 py-3 text-black border border-black rounded-full bg-white"
+                {selectedCategoryId && products.length === 0 ? (
+                  <p className="text-center text-gray-500">This category has no products listed.</p>
+                ) : (
+                  <div>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                      {products.map((product) => (
+                        <div
+                          key={product._id}
+                          className="bg-gray-100 p-4 rounded-lg shadow-md cursor-pointer w-50 h-50 relative"
+                          onClick={() => handleProductClick(product._id)}
                         >
-                          Add to Cart
-                        </button>
-                      </div>
-                    ))
-                  ) : (
-                    <p>No products available for this category.</p>
-                  )}
-                </div>
+                          <img 
+                            src={`http://localhost:5000/images/phones/${product.images[0]}`} 
+                            alt={product.name}
+                            className="w-50 h-50 object-cover mb-4"
+                          />
+                          <h3 className="text-[20px] text-gray-700">{product.name}</h3>
+                          <h4 className="text-[16px] text-gray-900 font-semibold">${product.price}</h4>
+                          <p className="text-sm text-gray-400">{product.stock} items left</p>
+                          
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              addToCart(product._id, 1);
+                            }}
+                            className="absolute bottom-2 right-2 px-6 py-3 text-black border border-black rounded-full bg-white"
+                          >
+                            Add to Cart
+                          </button>
+                        </div>
+                      ))}
+                    </div>
 
-                <div className="flex justify-center mt-4">
-                  <button
-                    className="px-4 py-2 bg-purple-400 text-white rounded mr-2"
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                  >
-                    &lt;
-                  </button>
-                  <span className="px-4 py-2 text-gray-900">Page {currentPage} of {totalPages}</span>
-                  <button
-                    className="px-4 py-2 bg-purple-400 text-white rounded ml-2"
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                  >
-                    &gt;
-                  </button>
-                </div>
+                    <div className="flex justify-center mt-4">
+                      <button
+                        className="px-4 py-2 bg-purple-400 text-white rounded mr-2"
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                      >
+                        &lt;
+                      </button>
+                      <span className="px-4 py-2 text-gray-900">Page {currentPage} of {totalPages}</span>
+                      <button
+                        className="px-4 py-2 bg-purple-400 text-white rounded ml-2"
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                      >
+                        &gt;
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

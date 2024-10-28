@@ -68,7 +68,7 @@ const ProductDetails = ({ params }: { params: { id: string } }) => {
       <div className="p-8 bg-white text-gray-900 rounded-lg shadow-lg w-[48rem]">
         <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
         <img
-          src={product.images[selectedImageIndex]}
+          src={`http://localhost:5000/images/phones/${product.images[0]}`} 
           alt={product.name}
           className="w-full h-64 object-cover mb-4 rounded"
         />

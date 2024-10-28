@@ -6,7 +6,7 @@ const fileTypes = /jpeg|jpg|png/;
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/'); // Specify the uploads folder
+    cb(null, 'uploads/phones/'); // Specify the uploads folder
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + path.extname(file.originalname)); // Add a timestamp to the file name

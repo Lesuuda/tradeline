@@ -19,7 +19,7 @@ async function seedCategories() {
     await Category.deleteMany({}); // Optional: Clear existing categories
 
     const categories = [
-      { name: 'Electronics', description: 'Gadgets and devices' },
+      { name: 'Phones', description: 'Latest smartphone devices' },
       { name: 'Fashion', description: 'Clothing and accessories' },
       { name: 'Home & Kitchen', description: 'Furniture and home decor' },
       { name: 'Sports', description: 'Sportswear and gear' },

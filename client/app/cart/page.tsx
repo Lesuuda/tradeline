@@ -91,7 +91,7 @@ const CartPage = () => {
         {cart.items.map((item) => (
           <div key={item.product._id} className="border border-gray-300 p-4 rounded-lg shadow-md flex flex-col">
             <img
-              src={item.product.images || '/fallback-image.jpg'}
+             src={`http://localhost:5000/images/phones/${item.product.images[0]}`} 
               alt={item.product.name}
               className="w-full h-48 object-cover rounded-md mb-4"
             />

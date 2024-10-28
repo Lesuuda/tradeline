@@ -104,7 +104,7 @@ const AuthPage = () => {
         <button
           type="submit"
           className={`w-full py-2 text-white font-semibold rounded-lg ${
-            loading ? 'bg-gray-400' : 'bg-yellow-600 hover:bg-blue-800'
+            loading ? 'bg-gray-400' : 'bg-pink-500 hover:bg-blue-800'
           }`}
           disabled={loading}
         >

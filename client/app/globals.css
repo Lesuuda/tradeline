@@ -46,3 +46,15 @@ button {
 div {
   font-family: var(--font-roboto-serif);
 }
+
+@layer utilities {
+  .grid-areas-layout {
+    grid-template-areas:
+      "clothing clothing skincare electronics"
+      "furniture furniture skincare electronics";
+  }
+  .clothing { grid-area: clothing; }
+  .skincare { grid-area: skincare; }
+  .electronics { grid-area: electronics; }
+  .furniture { grid-area: furniture; }
+}

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import HeaderIcons from "../components/headers";
 
+
 const CartPage = () => {
   interface CartItem {
     product: {

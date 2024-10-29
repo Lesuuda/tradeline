@@ -31,13 +31,13 @@ const WelcomeUser = () => {
     if (token) {
       try {
         const response = await fetch("http://localhost:5000/auth/logout", {
-          method: "POST",
+          method: "GET",
           headers: { Authorization: `Bearer ${token}` },
         });
         if (response.ok) {
           localStorage.removeItem("token");
           setUsername("");
-          window.location.href = "/login";
+          window.location.href = "/";
         } else {
           console.error("Logout failed");
         }

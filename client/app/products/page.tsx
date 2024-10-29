@@ -67,15 +67,19 @@ const ProductsPage = () => {
 
     try {
       const res = await fetch(url);
-      const data = await res.json();
-      if (res.ok) {
-        setProducts(data.products);
-        setCurrentPage(data.currentPage);
-        setTotalPages(data.totalPages);
-      } else {
-        throw new Error('Failed to fetch products');
+      
+      // Check if the response is okay
+      if (!res.ok) {
+        const errorText = await res.text(); // Get the response as text
+        throw new Error(`Error ${res.status}: ${errorText}`); // Throw an error with status code
       }
+
+      const data = await res.json();
+      setProducts(data.products);
+      setCurrentPage(data.currentPage);
+      setTotalPages(data.totalPages);
     } catch (err: any) {
+      console.error(err); // Log error for debugging
       setError(err.message);
     } finally {
       setLoading(false);
@@ -108,19 +112,21 @@ const ProductsPage = () => {
     setLoading(true);
     setError('');
 
-    const url = `http://localhost:5000/products/search?query=${query}&page=${page}&limit=20`;
+    const url = `http://localhost:5000/products/search?q=${query}&page=${page}&limit=20`;
 
     try {
       const res = await fetch(url);
-      const data = await res.json();
-      if (res.ok) {
-        setProducts(data.products);
-        setCurrentPage(data.currentPage);
-        setTotalPages(data.totalPages);
-      } else {
-        throw new Error('Failed to fetch products');
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Error ${res.status}: ${errorText}`);
       }
+
+      const data = await res.json();
+      setProducts(data.products);
+      setCurrentPage(data.currentPage);
+      setTotalPages(data.totalPages);
     } catch (err: any) {
+      console.error(err);
       setError(err.message);
     } finally {
       setLoading(false);

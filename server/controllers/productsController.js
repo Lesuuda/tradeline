@@ -88,7 +88,6 @@ class ProductsController {
             res.status(200).json({
                 currentPage: page,
                 totalPages: totalPages,
-                totalPages: totalPages,
                 totalProducts: totalProducts,
                 products: products,
             });

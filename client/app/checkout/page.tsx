@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import HeaderIcons from '../components/headers';
 
 const CheckoutPage = () => {
   const [shippingMethod, setShippingMethod] = useState<'delivery' | 'pickup'>('delivery');
@@ -127,7 +128,7 @@ const CheckoutPage = () => {
           {/* Left Side: Shipping Form */}
           <div className="w-full md:w-2/3 mr-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Checkout</h2>
-
+            <HeaderIcons/>
             <div className="mb-6">
               <h3 className="font-medium text-gray-900 mb-4">Shipping Information</h3>
               <div className="flex space-x-4 mb-4">

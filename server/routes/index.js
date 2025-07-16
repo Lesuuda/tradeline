@@ -9,6 +9,7 @@ import CategoryController from '../controllers/categoryController.js';
 import CartController from '../controllers/cartController.js';
 import upload from '../middleware/multer.js';
 import OrderController from '../controllers/orderController.js';
+import productsController from '../controllers/productsController.js';
 const router = express.Router();
 
 //authentication routes
@@ -39,7 +40,7 @@ router.post('/admin/add-category', CategoryController.addCategory);
 router.get('/categories', CategoryController.getCategories);
 
 // Get category by ID
-router.get('/categories/:id', CategoryController.getCategoryById);
+router.get('/categories/:id', productsController.getProductsByCategory);
 
 // Update category (Admin only)
 router.put('/admin/categories/:id', CategoryController.updateCategory);

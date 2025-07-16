@@ -81,10 +81,6 @@ class ProductsController {
                 .skip((page - 1) * pageLimit)
                 .limit(pageLimit);
 
-            if (products.length === 0) {
-                return res.status(404).json({ message: 'No products found for this category' });
-            }
-
             res.status(200).json({
                 currentPage: page,
                 totalPages: totalPages,
